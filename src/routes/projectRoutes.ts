@@ -14,10 +14,29 @@ router.post('/',
 );
 router.get('/',ProjectController.getAllProjects);
 
+// OBTENER PROYECTO POR ID
 router.get('/:id',
     param('id').isMongoId().withMessage('Invalid project id'),
     handleInputErrors,
-    ProjectController.getProjectById);
+    ProjectController.getProjectById
+);
+
+// ACTUALIZAR PROYECTO POR ID
+router.put('/:id',
+    param('id').isMongoId().withMessage('Invalid project id'),
+    body('projectName').notEmpty().withMessage('Project name is required'),
+    body('clientName').notEmpty().withMessage('Client name is required'),
+    body('description').notEmpty().withMessage('Description is required'),
+    handleInputErrors,
+    ProjectController.updateProject
+);
+
+// ELIMINAR UN PROYECTO POR ID
+router.delete('/:id',
+    param('id').isMongoId().withMessage('Invalid project id'),
+    handleInputErrors,
+    ProjectController.deleteProject
+);
 
 
 export default router;
