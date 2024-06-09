@@ -4,6 +4,7 @@ import { ProjectController } from '../controllers/ProjectController';
 import { handleInputErrors } from '../middleware/validation';
 import Task from '../models/Task';
 import { TaskController } from '../controllers/TaskController';
+import { validateProjectExists } from '../middleware/project';
 
 const router = Router();
 
@@ -41,8 +42,8 @@ router.delete('/:id',
 );
 
 // Route to add a task to a project
-
 router.post('/:projectId/tasks',
+    validateProjectExists,
     TaskController.createTask
 );
 
