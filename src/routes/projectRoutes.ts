@@ -42,8 +42,10 @@ router.delete('/:id',
 );
 
 // Route to add a task to a project
+
+router.param('projectId', validateProjectExists);
+
 router.post('/:projectId/tasks',
-    validateProjectExists,
     body('name').notEmpty().withMessage('Task name is required'),
     body('description').notEmpty().withMessage('Description is required'),
     handleInputErrors,
@@ -52,14 +54,13 @@ router.post('/:projectId/tasks',
 
 // Route to get all tasks from a project
 router.get('/:projectId/tasks',
-    validateProjectExists,
     TaskController.getAllTasks
 );
 
 
 // Route to get a task by id
 router.get('/:projectId/tasks/:taskId',
-    validateProjectExists,
+    param('taskId').isMongoId().withMessage('Invalid task id'),
     handleInputErrors,
     TaskController.getTaskById
 );
