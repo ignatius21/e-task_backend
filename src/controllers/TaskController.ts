@@ -39,14 +39,36 @@ export class TaskController {
   static updateTask = async (req: Request, res: Response) => {
     const { taskId} = req.params
     try {
-      const tasks = await Task.findByIdAndUpdate(taskId, req.body, {new: true}).populate('project');
-      if (!tasks) {
+      const task = await Task.findById(taskId);
+      if (!task) {
         return res.status(404).send("Task not found");
       }
-      if(tasks.project.id.toString() !== req.project.id){
+      if(task.project.id.toString() !== req.project.id){
         return res.status(404).send("Task not found");
       }
-      res.json(tasks);
+
+      task.name = req.body.name;
+      task.description = req.body.description;
+      await task.save();
+      res.json(task);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  static deleteTask = async (req: Request, res: Response) => {
+    const { taskId} = req.params
+    try {
+      const task = await Task.findById(taskId);
+
+      if (!task) {
+        return res.status(404).send("Task not found");
+      };
+
+      req.project.tasks = req.project.tasks.filter(task => task.toString() !== taskId)
+      await Promise.allSettled([task.deleteOne(),req.project.save()])
+      res.json('Task deleted');
+
     } catch (error) {
       console.log(error);
     }

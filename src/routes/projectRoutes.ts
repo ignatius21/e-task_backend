@@ -75,4 +75,12 @@ router.put('/:projectId/tasks/:taskId',
     TaskController.updateTask
 );
 
+// Route to delete a task by id
+
+router.delete('/:projectId/tasks/:taskId',
+    param('taskId').isMongoId().withMessage('Invalid task id'),
+    handleInputErrors,
+    TaskController.deleteTask
+);
+
 export default router;
