@@ -21,4 +21,19 @@ export class TaskController {
       console.log(error);
     }
   };
+  static getTaskById = async (req: Request, res: Response) => {
+    const { taskId} = req.params
+    try {
+      const tasks = await Task.findById(taskId).populate('project');
+      if (!tasks) {
+        return res.status(404).send("Task not found");
+      }
+      if(tasks.project.id.toString() !== req.project.id){
+        return res.status(404).send("Task not found");
+      }
+      res.json(tasks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
