@@ -2,6 +2,8 @@ import  {Router} from 'express';
 import {body,param} from 'express-validator'
 import { ProjectController } from '../controllers/ProjectController';
 import { handleInputErrors } from '../middleware/validation';
+import Task from '../models/Task';
+import { TaskController } from '../controllers/TaskController';
 
 const router = Router();
 
@@ -36,6 +38,12 @@ router.delete('/:id',
     param('id').isMongoId().withMessage('Invalid project id'),
     handleInputErrors,
     ProjectController.deleteProject
+);
+
+// Route to add a task to a project
+
+router.post('/:projectId/tasks',
+    TaskController.createTask
 );
 
 
