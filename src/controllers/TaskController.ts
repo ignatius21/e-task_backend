@@ -43,10 +43,6 @@ export class TaskController {
       if (!task) {
         return res.status(404).send("Task not found");
       }
-      if(task.project.id.toString() !== req.project.id){
-        return res.status(404).send("Task not found");
-      }
-
       task.name = req.body.name;
       task.description = req.body.description;
       await task.save();
@@ -73,5 +69,19 @@ export class TaskController {
       console.log(error);
     }
   };
-  
+
+  static updateTaskStatus = async (req: Request, res: Response) => {
+    const { taskId} = req.params
+    try {
+      const task = await Task.findById(taskId);
+      if (!task) {
+        return res.status(404).send("Task not found");
+      }
+      task.status = req.body.status;
+      await task.save();
+      res.json('Task status updated');
+    } catch (error) {
+      console.log(error)
+    }
+  };
 }

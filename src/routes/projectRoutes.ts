@@ -83,4 +83,12 @@ router.delete('/:projectId/tasks/:taskId',
     TaskController.deleteTask
 );
 
+// update status of a task
+router.post('/:projectId/tasks/:taskId/status',
+    param('taskId').isMongoId().withMessage('Invalid task id'),
+    body('status').notEmpty().withMessage('Status is required'),
+    handleInputErrors,
+    TaskController.updateTaskStatus
+);
+
 export default router;
