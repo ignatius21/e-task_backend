@@ -44,6 +44,9 @@ router.delete('/:id',
 // Route to add a task to a project
 router.post('/:projectId/tasks',
     validateProjectExists,
+    body('name').notEmpty().withMessage('Task name is required'),
+    body('description').notEmpty().withMessage('Description is required'),
+    handleInputErrors,
     TaskController.createTask
 );
 
