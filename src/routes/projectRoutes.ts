@@ -50,5 +50,12 @@ router.post('/:projectId/tasks',
     TaskController.createTask
 );
 
+// Route to get all tasks from a project
+
+router.get('/:projectId/tasks',
+    validateProjectExists,
+    TaskController.getAllTasks
+);
+
 
 export default router;
