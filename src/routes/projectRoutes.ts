@@ -51,7 +51,6 @@ router.post('/:projectId/tasks',
 );
 
 // Route to get all tasks from a project
-
 router.get('/:projectId/tasks',
     validateProjectExists,
     TaskController.getAllTasks

@@ -15,11 +15,10 @@ export class TaskController {
   };
   static getAllTasks = async (req: Request, res: Response) => {
     try {
-      const tasks = await Task.find({ project: req.project.id });
+      const tasks = await Task.find({ project: req.project.id }).populate('project')
       res.json(tasks)
     } catch (error) {
       console.log(error);
     }
-    res.send("Todos los proyectos");
   };
 }
