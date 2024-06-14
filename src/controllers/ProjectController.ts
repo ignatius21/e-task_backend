@@ -18,7 +18,6 @@ export class ProjectController {
     } catch (error) {
       console.log(error);
     }
-    res.send("Todos los proyectos");
   };
   static getProjectById = async (req: Request, res: Response) => {
     try {
