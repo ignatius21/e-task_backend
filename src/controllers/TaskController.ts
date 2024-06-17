@@ -42,6 +42,8 @@ export class TaskController {
       const task = await Task.findById(taskId);
       if (!task) {
         return res.status(404).send("Task not found");
+      } else{
+        res.send('Task Updated')
       }
       task.name = req.body.name;
       task.description = req.body.description;
