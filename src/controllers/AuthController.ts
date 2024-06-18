@@ -1,6 +1,8 @@
 import type {Request,Response} from 'express';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
+import Token from '../models/Token';
+import { generateToken } from '../utils/token';
 
 
 
@@ -16,12 +18,20 @@ export class AuthController {
             }
             // crear usuario
             const user = new User(req.body);
+            
             // encriptar contraseña
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
-            // guardar usuario
-            await user.save();
+
+            // generar el token
+            const token = new Token()
+            token.token = generateToken();
+            token.user = user._id;
+
+            // guardar usuario y token
+            await Promise.allSettled([token.save(), user.save()]);
             res.send('Cuenta creada, revisa tu email para confirmarla');
+
         } catch (error) {
             res.status(500).json({ error: 'Error al crear el usuario' });
         }
