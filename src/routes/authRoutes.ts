@@ -25,4 +25,13 @@ router.post('/confirm-account',
     AuthController.confirmAccount
 );
 
+// endpoint para el loggig
+
+router.post('/login',
+    body('email').isEmail(),
+    body('password').isString().notEmpty().withMessage('La contraseña es requerida').isLength({min:6}),
+    handleInputErrors,
+    AuthController.login
+);
+
 export default router;

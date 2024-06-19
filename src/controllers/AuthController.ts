@@ -61,4 +61,33 @@ export class AuthController {
             res.status(500).json({ error: 'Error al confirmar la cuenta' });
         }
     }
+
+    static login = async (req: Request, res: Response) => {
+        try {
+            const { email, password } = req.body;
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+            if (!user.confirmed) {
+                const token = new Token();
+                user.token = user._id;
+                token.token = generateToken();
+                await Promise.allSettled([user.save(), token.save()]);
+                await AuthEmail.sendConfirmationEmail({
+                    email: user.email,
+                    name: user.name,
+                    token: token.token
+                });
+                return res.status(401).json({ error: 'Debes confirmar tu cuenta antes de iniciar sesion' });
+            }
+            const validPassword = await bcrypt.compare(password, user.password);
+            if (!validPassword) {
+                return res.status(401).json({ error: 'Contraseña incorrecta' });
+            }
+            return res.status(200).json({ message: 'Autenticando...' });
+        } catch (error) {
+            res.status(500).json({ error: 'Error al iniciar sesión' });
+        }
+    }
 }
