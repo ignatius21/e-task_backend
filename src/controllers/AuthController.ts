@@ -53,7 +53,7 @@ export class AuthController {
             if (!tokenExists) {
                 return res.status(404).json({ error: 'Token no encontrado' });
             }
-            const user = tokenExists.user as any;
+            const user = await User.findById(tokenExists.user._id);
             user.confirmed = true;
             await Promise.allSettled([user.save(), Token.deleteOne({ _id: tokenExists._id })]);
             res.send('Cuenta confirmada');
