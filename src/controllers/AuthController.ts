@@ -3,7 +3,7 @@ import User from '../models/User';
 import bcrypt from 'bcrypt';
 import Token from '../models/Token';
 import { generateToken } from '../utils/token';
-import { transporter } from '../config/nodemailer';
+import { AuthEmail } from '../emails/AuthEmail';
 
 
 
@@ -30,13 +30,12 @@ export class AuthController {
             token.user = user._id;
 
             // enviar email
-            // enviar email
-            await transporter.sendMail({
-                from: 'e-task <admin@etask.com>',
-                to: user.email,
-                subject: 'Confirma tu cuenta',
-                html: `<p>Confirma tu cuenta</p>`
+            await AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.name,
+                token: token.token
             });
+            
 
             // guardar usuario y token
             await Promise.allSettled([user.save(),token.save()]);
