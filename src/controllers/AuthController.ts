@@ -45,4 +45,20 @@ export class AuthController {
             res.status(500).json({ error: 'Error al crear el usuario' });
         }
     }
+
+    static confirmAccount = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body;
+            const tokenExists = await Token.findOne({ token }).populate('user');
+            if (!tokenExists) {
+                return res.status(404).json({ error: 'Token no encontrado' });
+            }
+            const user = tokenExists.user as any;
+            user.confirmed = true;
+            await Promise.allSettled([user.save(), Token.deleteOne({ _id: tokenExists._id })]);
+            res.send('Cuenta confirmada');
+        } catch (error) {
+            res.status(500).json({ error: 'Error al confirmar la cuenta' });
+        }
+    }
 }
