@@ -127,4 +127,35 @@ export class AuthController {
             res.status(500).json({ error: 'Error al crear el usuario' });
         }
     }
+
+    static forgotPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            //usuario existe
+            const user = await User.findOne({ email });
+            if (!user) {
+                const error = new Error('El usuario no esta registrado');
+                return res.status(404).json({ error: error.message });
+            }
+            
+
+            // generar el token
+            const token = new Token()
+            token.token = generateToken();
+            token.user = user._id;
+            await token.save();
+
+            // enviar email
+            await AuthEmail.sendPasswordResetToken({
+                email: user.email,
+                name: user.name,
+                token: token.token
+            });
+
+            res.send('Revisa tu email para instrucciones de recuperacion de password');
+
+        } catch (error) {
+            res.status(500).json({ error: 'Error al crear el usuario' });
+        }
+    }
 }
