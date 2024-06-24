@@ -33,5 +33,10 @@ router.post('/login',
     handleInputErrors,
     AuthController.login
 );
+router.post('/request-code',
+    body('email').isEmail(),
+    handleInputErrors,
+    AuthController.requestConfirmationCode
+);
 
 export default router;

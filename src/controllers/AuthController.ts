@@ -90,4 +90,41 @@ export class AuthController {
             res.status(500).json({ error: 'Error al iniciar sesión' });
         }
     }
+    static requestConfirmationCode = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            //usuario existe
+            const user = await User.findOne({ email });
+            if (!user) {
+                const error = new Error('El usuario no esta registrado');
+                return res.status(404).json({ error: error.message });
+            }
+
+            if(user.confirmed){
+                const error = new Error('El usuario ya esta confirmado');
+                return res.status(403).json({ error: error.message });
+            }
+            
+
+            // generar el token
+            const token = new Token()
+            token.token = generateToken();
+            token.user = user._id;
+
+            // enviar email
+            await AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.name,
+                token: token.token
+            });
+            
+
+            // guardar usuario y token
+            await Promise.allSettled([user.save(),token.save()]);
+            res.send('Se ha enviado un nuevo token a tu cuenta de correo');
+
+        } catch (error) {
+            res.status(500).json({ error: 'Error al crear el usuario' });
+        }
+    }
 }
