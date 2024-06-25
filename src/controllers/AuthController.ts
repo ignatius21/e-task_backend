@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import Token from '../models/Token';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
+import { hashPassword } from '../utils/auth';
 
 
 
@@ -168,6 +169,25 @@ export class AuthController {
             }
             
             res.send('Token valido, ingresa tu nuevo password');
+        } catch (error) {
+            res.status(500).json({ error: 'Error al confirmar el token' });
+        }
+    }
+    static updatePasswordWithToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.params;
+            const tokenExists = await Token.findOne({ token })
+            if (!tokenExists) {
+                return res.status(404).json({ error: 'Token no encontrado' });
+            }
+
+            const user = await User.findById(tokenExists.user);
+            user.password = await hashPassword(req.body.password);
+            
+            await Promise.allSettled([user.save(), tokenExists.deleteOne()]);
+            
+            
+            res.send('Password actualizado correctamente');
         } catch (error) {
             res.status(500).json({ error: 'Error al confirmar el token' });
         }
