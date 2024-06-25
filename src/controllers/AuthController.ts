@@ -158,4 +158,18 @@ export class AuthController {
             res.status(500).json({ error: 'Error al crear el usuario' });
         }
     }
+
+    static validateToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body;
+            const tokenExists = await Token.findOne({ token })
+            if (!tokenExists) {
+                return res.status(404).json({ error: 'Token no encontrado' });
+            }
+            
+            res.send('Token valido, ingresa tu nuevo password');
+        } catch (error) {
+            res.status(500).json({ error: 'Error al confirmar el token' });
+        }
+    }
 }
