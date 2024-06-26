@@ -45,6 +45,10 @@ export class ProjectController {
       if (!project) {
         return res.status(404).send("Project not found");
       }
+      if (project.manager.toString() !== req.user.id.toString()) {
+        const error = new Error('Solo el manager puede actualizar un proyecto');
+        return res.status(404).json({error: error.message})
+      }
       project.clientName = req.body.clientName;
       project.projectName = req.body.projectName;
       project.description = req.body.description;
@@ -57,9 +61,13 @@ export class ProjectController {
   static deleteProject = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        const project = await Project.findByIdAndDelete(id);
+        const project = await Project.findById(id);
         if (!project) {
             return res.status(404).send("Project not found");
+        }
+        if (project.manager.toString() !== req.user.id.toString()) {
+          const error = new Error('Solo el manager puede eliminar un proyecto');
+          return res.status(404).json({error: error.message})
         }
         res.send("Project deleted");
     } catch (error) {
