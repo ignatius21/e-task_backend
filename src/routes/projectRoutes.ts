@@ -9,15 +9,17 @@ import { auntenthicate } from '../middleware/auth';
 
 const router = Router();
 
+
+router.use(auntenthicate);
+
 router.post('/',
-    auntenthicate,
     body('projectName').notEmpty().withMessage('Project name is required'),
     body('clientName').notEmpty().withMessage('Client name is required'),
     body('description').notEmpty().withMessage('Description is required'),
     handleInputErrors,
     ProjectController.createProject
 );
-router.get('/', auntenthicate,ProjectController.getAllProjects);
+router.get('/', ProjectController.getAllProjects);
 
 // OBTENER PROYECTO POR ID
 router.get('/:id',
