@@ -17,7 +17,7 @@ router.post('/',
     handleInputErrors,
     ProjectController.createProject
 );
-router.get('/',ProjectController.getAllProjects);
+router.get('/', auntenthicate,ProjectController.getAllProjects);
 
 // OBTENER PROYECTO POR ID
 router.get('/:id',
