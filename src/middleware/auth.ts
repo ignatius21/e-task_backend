@@ -25,6 +25,7 @@ export const auntenthicate = async (req: Request, res: Response, next: NextFunct
             const user = await User.findById(decoded.id).select('_id');
             if(user){
                 req.user = user;
+                next();
             } else {
                 res.status(500).json({message: 'Token no valido'});
             }
@@ -32,5 +33,4 @@ export const auntenthicate = async (req: Request, res: Response, next: NextFunct
     } catch (error) {
         res.status(500).json({message: 'Token no valido'});
     }
-    next();
 };

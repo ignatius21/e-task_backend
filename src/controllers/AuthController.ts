@@ -196,4 +196,7 @@ export class AuthController {
             res.status(500).json({ error: 'Error al confirmar el token' });
         }
     }
+    static user = async (req: Request, res: Response) => {
+        return res.json(req.user);
+    }
 }
