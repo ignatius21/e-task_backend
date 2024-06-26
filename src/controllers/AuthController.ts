@@ -50,13 +50,13 @@ export class AuthController {
     static confirmAccount = async (req: Request, res: Response) => {
         try {
             const { token } = req.body;
-            const tokenExists = await Token.findOne({ token }).populate('user');
+            const tokenExists = await Token.findOne({ token });
             if (!tokenExists) {
                 return res.status(404).json({ error: 'Token no encontrado' });
             }
-            const user = await User.findById(tokenExists.user._id);
+            const user = await User.findById(tokenExists.user);
             user.confirmed = true;
-            await Promise.allSettled([user.save(), Token.deleteOne({ _id: tokenExists._id })]);
+            await Promise.allSettled([user.save(), tokenExists.deleteOne()]);
             res.send('Cuenta confirmada');
         } catch (error) {
             res.status(500).json({ error: 'Error al confirmar la cuenta' });
@@ -72,7 +72,7 @@ export class AuthController {
             }
             if (!user.confirmed) {
                 const token = new Token();
-                user.token = user._id;
+                user.token = user.id;
                 token.token = generateToken();
                 await Promise.allSettled([user.save(), token.save()]);
                 await AuthEmail.sendConfirmationEmail({
@@ -110,7 +110,7 @@ export class AuthController {
             // generar el token
             const token = new Token()
             token.token = generateToken();
-            token.user = user._id;
+            token.user = user.id;
 
             // enviar email
             await AuthEmail.sendConfirmationEmail({
@@ -143,7 +143,7 @@ export class AuthController {
             // generar el token
             const token = new Token()
             token.token = generateToken();
-            token.user = user._id;
+            token.user = user.id;
             await token.save();
 
             // enviar email
