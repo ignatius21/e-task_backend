@@ -5,6 +5,7 @@ import Token from '../models/Token';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
 import { hashPassword } from '../utils/auth';
+import { generateJWT } from '../utils/jwt';
 
 
 
@@ -86,7 +87,10 @@ export class AuthController {
             if (!validPassword) {
                 return res.status(401).json({ error: 'Contraseña incorrecta' });
             }
-            return res.status(200).json({ message: 'Autenticado...' });
+
+            const token=generateJWT({id:user.id});
+
+            res.send(token)
         } catch (error) {
             res.status(500).json({ error: 'Error al iniciar sesión' });
         }
