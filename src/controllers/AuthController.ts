@@ -86,7 +86,7 @@ export class AuthController {
             if (!validPassword) {
                 return res.status(401).json({ error: 'Contraseña incorrecta' });
             }
-            return res.status(200).json({ message: 'Autenticando...' });
+            return res.status(200).json({ message: 'Autenticado...' });
         } catch (error) {
             res.status(500).json({ error: 'Error al iniciar sesión' });
         }
