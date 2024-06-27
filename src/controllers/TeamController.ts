@@ -9,4 +9,17 @@ export class TeamMemberController {
         if(!user) return res.status(404).json({ message: 'Usuario no encontrado' });
         res.json(user);
     }
+    static addMemberById = async (req:Request,res:Response) => {
+        const {id} = req.body;
+        // find the user with the email
+        const user = await User.findById(id).select('_id');
+        if(!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+        if(req.project.team.some(team => team.toString() === user.id.toString())) {
+            return res.status(409).json({ message: 'El usuario ya pertenece al equipo' });
+        }
+        req.project.team.push(user.id);
+        await req.project.save();
+        res.send('Usuario agregado correctamente');
+        
+    }
 }
