@@ -98,6 +98,10 @@ router.post('/:projectId/tasks/:taskId/status',
 
 // routes for teams
 
+router.get('/:projectId/team',
+    TeamMemberController.getProjectTeam
+);
+
 router.post('/:projectId/team/find',
     body('email').isEmail().withMessage('Invalid email').toLowerCase(),
     handleInputErrors,
