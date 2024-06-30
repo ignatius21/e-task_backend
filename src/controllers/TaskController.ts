@@ -80,6 +80,11 @@ export class TaskController {
         return res.status(404).send("Task not found");
       }
       task.status = req.body.status;
+      if(req.body.status === 'pending') {
+        task.completedBy = null;
+      } else {
+        task.completedBy = req.user.id;
+      }
       await task.save();
       res.json('Task status updated');
     } catch (error) {
