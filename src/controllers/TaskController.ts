@@ -24,7 +24,7 @@ export class TaskController {
   static getTaskById = async (req: Request, res: Response) => {
     const { taskId} = req.params
     try {
-      const tasks = await Task.findById(taskId).populate('project');
+      const tasks = await Task.findById(taskId).populate('project').populate('completedBy', 'name');
       if (!tasks) {
         return res.status(404).send("Task not found");
       }
