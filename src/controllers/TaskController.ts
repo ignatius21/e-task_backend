@@ -24,7 +24,7 @@ export class TaskController {
   static getTaskById = async (req: Request, res: Response) => {
     const { taskId} = req.params
     try {
-      const tasks = await Task.findById(taskId).populate('project').populate('completedBy', 'name');
+      const tasks = await Task.findById(taskId).populate('project').populate('completedBy.user', 'name');
       if (!tasks) {
         return res.status(404).send("Task not found");
       }
@@ -80,11 +80,11 @@ export class TaskController {
         return res.status(404).send("Task not found");
       }
       task.status = req.body.status;
-      if(req.body.status === 'pending') {
-        task.completedBy = null;
-      } else {
-        task.completedBy = req.user.id;
+      const data = {
+        user: req.user.id,
+        status: req.body.status
       }
+      task.completedBy.push(data);
       await task.save();
       res.json('Task status updated');
     } catch (error) {
