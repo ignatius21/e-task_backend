@@ -216,5 +216,21 @@ export class AuthController {
         }
     }
 
+    static updatePassword = async (req: Request, res: Response) => {
+        const { current_password, password } = req.body;
+        const user = await User.findById(req.user.id);
+        const validPassword = await bcrypt.compare(current_password, user.password);
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Contraseña actual incorrecta' });
+        }
+        try {
+            user.password = await hashPassword(password);
+            await user.save();
+            res.send('Contraseña actualizada correctamente');
+        } catch (error) {
+            res.status(500).json({ error: 'Error al actualizar la contraseña' });
+        }
+    }
+
 
 }

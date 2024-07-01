@@ -82,4 +82,19 @@ router.put('/profile',
     AuthController.updateProfile
 );
 
+router.post('/update-password',
+    auntenthicate,
+    body('current_password').isString().notEmpty().withMessage('La contraseña actual es requerida').isLength({min:6}),
+    body('password').isString().notEmpty().withMessage('La nueva contraseña es requerida').isLength({min:6}),
+    body('password_confirmation').custom((value,{req}) => {
+        if(value !== req.body.password){
+            throw new Error('Las contraseñas no coinciden');
+        }
+        return true;
+    }
+    ),
+    handleInputErrors,
+    AuthController.updatePassword
+);
+
 export default router;
