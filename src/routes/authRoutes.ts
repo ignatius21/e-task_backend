@@ -97,4 +97,11 @@ router.post('/update-password',
     AuthController.updatePassword
 );
 
+router.post('/check-password',
+    auntenthicate,
+    body('password').notEmpty().withMessage('La contraseña es requerida'),
+    handleInputErrors,
+    AuthController.checkPassword
+)
+
 export default router;
