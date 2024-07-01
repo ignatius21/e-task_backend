@@ -72,4 +72,14 @@ router.get('/user',
     AuthController.user
 )
 
+// Profile
+
+router.put('/profile',
+    auntenthicate,
+    body('name').isString().isLength({min:2}).notEmpty().withMessage('El nombre es requerido'),
+    body('email').isEmail(),
+    handleInputErrors,
+    AuthController.updateProfile
+);
+
 export default router;
