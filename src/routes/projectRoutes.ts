@@ -8,7 +8,7 @@ import { validateProjectExists } from '../middleware/project';
 import { auntenthicate } from '../middleware/auth';
 import { TeamMemberController } from '../controllers/TeamController';
 import { hasAutorization } from '../middleware/task';
-import { NoteController } from '../controllers/NoteCrontroller';
+
 
 
 const router = Router();
@@ -124,14 +124,5 @@ router.delete('/:projectId/team/:userId',
     handleInputErrors,
     TeamMemberController.removeMemberById
 );
-
-// routes for notes
-
-router.post('/:projectId/tasks/:taskId/notes',
-
-    body('content').notEmpty().withMessage('Content is required'),
-    handleInputErrors,
-    NoteController.createNote
-)
 
 export default router;
