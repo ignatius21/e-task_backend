@@ -1,5 +1,5 @@
 import mongoose, {Schema, Document,PopulatedDoc,Types} from 'mongoose';
-import { ITask } from './Task';
+import Task, { ITask } from './Task';
 import { IUser } from './User';
 
 export interface IProject extends Document  {
@@ -22,6 +22,14 @@ const ProjectSchema = new Schema(
   },
   { timestamps: true }
 );
+
+// eliminar tareas relacionadas al proyecto
+ProjectSchema.pre<IProject>("deleteOne", async function (next) {
+  await Task.deleteMany({ project: this._id });
+  next();
+});
+
+
 
 const Project = mongoose.model<IProject>('Project', ProjectSchema);
 
